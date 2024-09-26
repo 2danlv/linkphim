@@ -10,8 +10,7 @@
             font-size:16px;
             margin-top: 10px;
         }
-        .col-3 {
-            padding: 0 12px;
+        .row {
             margin-bottom:20px;
         }
         img {
@@ -77,7 +76,7 @@ function renderMovies(data) {
 }
     // Fetch JSON data from the provided URL
     $.ajax({
-        url: 'http://fs.fshare.uk:5244/d/movies/DataMovies/ThuvienCine/thuviencine_movies_extract_full_new_convert.json',
+        url: 'thuviencine_movies_extract_full_new_convert.json',
         method: 'GET',
         dataType: 'json',
         success: function(data) {
