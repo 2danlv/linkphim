@@ -32,9 +32,10 @@ function renderItems(page) {
     itemsToShow.forEach(item => {
         const itemList = document.createElement('div');
         itemList.className = 'row mb-4';
+        const posterUrl = item.info.poster.replace(/w600_and_h900_bestv2/, 'w342');
         itemList.innerHTML = `
             <div class="col-md-3">
-                <img src="${item.info.poster}" class="thumb-image" alt="${item.name}">
+                <img src="${posterUrl}" class="thumb-image" alt="${item.name}">
             </div>
             <div class="col-md-9">
                 <div class="card">
