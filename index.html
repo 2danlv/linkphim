@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Pagination Example with Search Suggestions</title>
+    <title>Bootstrap Pagination with JSON Selection</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -52,6 +52,19 @@
             <input type="text" id="searchInput" class="form-control mb-2" placeholder="Search for movies...">
             <div id="suggestions" class="suggestions" style="display: none;"></div>
         </div>
+
+        <!-- Radio buttons to select the JSON file -->
+        <div class="mb-3">
+            <label>
+                <input type="radio" name="jsonFile" value="thuviencine_movies_extract_full_new_convert.json">
+                Movies
+            </label>
+            <label class="ml-3">
+                <input type="radio" name="jsonFile" value="thuviencine_tv-series_extract_full_new_convert.json">
+                TV-series
+            </label>
+        </div>
+
         <div id="content" class="list-group"></div>
         <nav aria-label="Page navigation example">
             <ul id="pagination" class="pagination justify-content-center mt-4"></ul>
@@ -60,9 +73,6 @@
 
     <!-- Optional Bootstrap JavaScript and jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
     <script>
         const itemsPerPage = 10;
         const pageLimit = 5; // Limit of visible page numbers
@@ -70,17 +80,16 @@
         let data = [];
         let filteredData = [];
 
-        // Updated URL for JSON data
-        const url = 'thuviencine_movies_extract_full_new_convert.json';
-
-        function fetchData() {
+        // Function to fetch data from a JSON file
+        function fetchData(url) {
             $.getJSON(url, function(response) {
                 data = response;
                 filteredData = data; // Initialize filtered data
+                currentPage = 1; // Reset to the first page
                 renderItems(currentPage);
                 renderPagination();
             }).fail(function() {
-                console.error('Failed to fetch data');
+                console.error('Failed to fetch data from', url);
             });
         }
 
@@ -191,7 +200,15 @@
 
         // Search functionality with suggestions
         $(document).ready(function() {
-            fetchData();
+            // Initial data fetch
+            const initialUrl = $('input[name="jsonFile"]:checked').val();
+            fetchData(initialUrl);
+
+            // Radio button change event
+            $('input[name="jsonFile"]').on('change', function() {
+                const selectedUrl = $(this).val();
+                fetchData(selectedUrl);
+            });
 
             $('#searchInput').on('input', function() {
                 const query = $(this).val().toLowerCase();
@@ -213,29 +230,28 @@
 
                 if (query.length > 0) {
                     const suggestions = data.filter(item => item.name.toLowerCase().includes(query));
-                    suggestions.forEach(item => {
-                        const suggestionItem = $('<div class="suggestion-item"></div>');
-                        suggestionItem.text(item.name);
+                    suggestions.forEach(suggestion => {
+                        const suggestionItem = $('<div>').addClass('suggestion-item').text(suggestion.name);
                         suggestionItem.on('click', function() {
-                            $('#searchInput').val(item.name);
-                            filteredData = [item]; // Set filteredData to selected item
-                            currentPage = 1; // Reset to the first page
+                            $('#searchInput').val(suggestion.name);
+                            filteredData = data.filter(item => item.name.toLowerCase().includes(suggestion.name.toLowerCase()));
+                            currentPage = 1;
                             renderItems(currentPage);
                             renderPagination();
-                            suggestionsDiv.hide(); // Hide suggestions
-                            smoothScroll();
+                            suggestionsDiv.hide();
                         });
                         suggestionsDiv.append(suggestionItem);
                     });
+
                     suggestionsDiv.show();
                 } else {
                     suggestionsDiv.hide();
                 }
             }
 
-            // Hide suggestions when clicking outside
+            // Hide suggestions when clicking outside the suggestions box
             $(document).on('click', function(event) {
-                if (!$(event.target).closest('#searchInput, #suggestions').length) {
+                if (!$(event.target).closest('#suggestions, #searchInput').length) {
                     $('#suggestions').hide();
                 }
             });
