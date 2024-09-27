@@ -35,11 +35,20 @@
         .suggestion-item:hover {
             background-color: #f1f1f1;
         }
+        /* Fixed Search Input Styles */
+        .fixed-search {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 1020; /* Above other elements */
+            padding: 10px 0; /* Padding for spacing */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for visibility */
+        }
     </style>
 </head>
 <body>
     <div class="container mt-4">
-        <div class="position-relative">
+        <div class="fixed-search">
             <input type="text" id="searchInput" class="form-control mb-2" placeholder="Search for movies...">
             <div id="suggestions" class="suggestions" style="display: none;"></div>
         </div>
