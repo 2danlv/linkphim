@@ -36,7 +36,7 @@ function renderItems(page) {
             <div class="col-md-3">
                 <img src="${item.info.poster}" class="thumb-image" alt="${item.name}">
             </div>
-            <div class="col-md-9 mb-4">
+            <div class="col-md-9">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">${item.name}</h5>
