@@ -3,19 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Pagination Example</title>
+    <title>Bootstrap Pagination Example with Search Suggestions</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Optional: Add some padding to the content for visual spacing */
         body {
             padding-top: 20px;
+        }
+        .thumb-image {
+            max-width: 250px; /* Set max width for thumbnails */
+            height: auto; /* Maintain aspect ratio */
+            margin-right: 15px; /* Spacing between image and text */
+        }
+        .list-group-item {
+            display: flex;
+            align-items: center; /* Align image and text vertically */
+        }
+        .suggestions {
+            position: absolute;
+            z-index: 1000;
+            background: white;
+            border: 1px solid #ccc;
+            max-height: 200px;
+            overflow-y: auto;
+            width: calc(100% - 1rem);
+        }
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background-color: #f1f1f1;
         }
     </style>
 </head>
 <body>
     <div class="container mt-4">
-        <div id="content"></div>
+        <div class="position-relative">
+            <input type="text" id="searchInput" class="form-control mb-2" placeholder="Search for movies...">
+            <div id="suggestions" class="suggestions" style="display: none;"></div>
+        </div>
+        <div id="content" class="list-group"></div>
         <nav aria-label="Page navigation example">
             <ul id="pagination" class="pagination justify-content-center mt-4"></ul>
         </nav>
@@ -31,6 +59,7 @@
         const pageLimit = 5; // Limit of visible page numbers
         let currentPage = 1;
         let data = [];
+        let filteredData = [];
 
         // Updated URL for JSON data
         const url = 'thuviencine_movies_extract_full_new_convert.json';
@@ -38,6 +67,7 @@
         function fetchData() {
             $.getJSON(url, function(response) {
                 data = response;
+                filteredData = data; // Initialize filtered data
                 renderItems(currentPage);
                 renderPagination();
             }).fail(function() {
@@ -45,52 +75,50 @@
             });
         }
 
-        // Function to render items (seasons and episodes) on the page
+        // Function to render items (seasons and episodes) as a list with thumbnail images
         function renderItems(page) {
             const startIndex = (page - 1) * itemsPerPage;
             const endIndex = startIndex + itemsPerPage;
-            const itemsToShow = data.slice(startIndex, endIndex);
+            const itemsToShow = filteredData.slice(startIndex, endIndex);
 
             const contentDiv = document.getElementById('content');
-            contentDiv.innerHTML = '';
+            contentDiv.innerHTML = ''; // Clear existing items
 
             itemsToShow.forEach(item => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'row mb-5';
-                itemDiv.innerHTML = `
-                <div class="col-md-3">
-                    <img src="${item.info.poster}" class="card-img-top" alt="${item.name}">
-                </div>
-                    <div class="col-md-9 mb-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">${item.name}</h5>
-                                <p class="card-text">${item.info.plot}</p>
-                                <div class="list-group list-group-flush">
-                                <div class="list-group-item mt-1">
-                                    ${item.seasons.map(season => `
-                                    <h6>Season ${season.season}</h6>
-                                    ${season.episodes.map(episode => `
-                                        <div class="list-group-item">
-                                            <p class="mb-0">Episode ${episode.episode}: <a href="${episode.video}" class="btn btn-primary btn-sm" target="_blank"> ${episode.name}</a></p>
-                                        </div>
+                const itemList = document.createElement('div');
+                itemList.className = 'list-group-item';
+
+                itemList.innerHTML = `
+                    <img src="${item.info.poster}" class="thumb-image" alt="${item.name}">
+                    <div>
+                        <h5 class="mb-1">${item.name}</h5>
+                        <p class="mb-1">${item.info.plot}</p>
+                        <small>Added: ${new Date(item.info.added * 1000).toLocaleString()}</small>
+                        <ul class="list-unstyled mt-3">
+                            ${item.seasons.map(season => `
+                                <li>
+                                    <strong>Season ${season.season}</strong>
+                                    <ul>
+                                        ${season.episodes.map(episode => `
+                                            <li>
+                                                <a href="${episode.video}" target="_blank">Episode ${episode.episode}: ${episode.name}</a>
+                                            </li>
                                         `).join('')}
-                                    `).join('')}
-                                </div>
-                                </div>
-                            </div>
-                        </div>
+                                    </ul>
+                                </li>
+                            `).join('')}
+                        </ul>
                     </div>
                 `;
-                contentDiv.appendChild(itemDiv);
+                contentDiv.appendChild(itemList);
             });
         }
 
         // Function to create pagination with Next and Previous buttons
         function renderPagination() {
-            const totalPages = Math.ceil(data.length / itemsPerPage);
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
             const paginationUl = document.getElementById('pagination');
-            paginationUl.innerHTML = '';
+            paginationUl.innerHTML = ''; // Clear existing pagination
 
             // Previous button
             const prevLi = document.createElement('li');
@@ -152,8 +180,57 @@
             $('html, body').animate({ scrollTop: 0 }, 500); // Adjust the speed as needed
         }
 
-        // Initial data fetch
-        fetchData();
+        // Search functionality with suggestions
+        $(document).ready(function() {
+            fetchData();
+
+            $('#searchInput').on('input', function() {
+                const query = $(this).val().toLowerCase();
+                // Filter data based on the search query
+                filteredData = data.filter(item => item.name.toLowerCase().includes(query));
+                currentPage = 1; // Reset to the first page
+                renderItems(currentPage);
+                renderPagination();
+                smoothScroll();
+
+                // Show suggestions
+                showSuggestions(query);
+            });
+
+            // Function to show suggestions
+            function showSuggestions(query) {
+                const suggestionsDiv = $('#suggestions');
+                suggestionsDiv.empty(); // Clear previous suggestions
+
+                if (query.length > 0) {
+                    const suggestions = data.filter(item => item.name.toLowerCase().includes(query));
+                    suggestions.forEach(item => {
+                        const suggestionItem = $('<div class="suggestion-item"></div>');
+                        suggestionItem.text(item.name);
+                        suggestionItem.on('click', function() {
+                            $('#searchInput').val(item.name);
+                            filteredData = [item]; // Set filteredData to selected item
+                            currentPage = 1; // Reset to the first page
+                            renderItems(currentPage);
+                            renderPagination();
+                            suggestionsDiv.hide(); // Hide suggestions
+                            smoothScroll();
+                        });
+                        suggestionsDiv.append(suggestionItem);
+                    });
+                    suggestionsDiv.show();
+                } else {
+                    suggestionsDiv.hide();
+                }
+            }
+
+            // Hide suggestions when clicking outside
+            $(document).on('click', function(event) {
+                if (!$(event.target).closest('#searchInput, #suggestions').length) {
+                    $('#suggestions').hide();
+                }
+            });
+        });
     </script>
 </body>
 </html>
