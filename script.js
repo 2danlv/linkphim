@@ -41,10 +41,11 @@ function renderItems(page) {
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">${item.name}</h5>
+                        <p class="mb-3"><small><i>Added: ${new Date(item.info.added * 1000).toLocaleString()}</i></small></p>
                         <p class="card-text">${item.info.plot}</p>
                         <div class="list-group list-group-flush">
                             ${item.seasons.map(season => `
-                                <div class="list-group-item">
+                                <div>
                                     <h6>Season ${season.season}</h6>
                                     ${season.episodes.map(episode => `
                                         <div class="mb-2">
