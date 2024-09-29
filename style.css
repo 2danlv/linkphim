@@ -7,14 +7,21 @@
 
 /* Suggestions Dropdown */
 .suggestions {
-    position: absolute;
-    z-index: 1000;
-    background: white;
-    border: 1px solid #ccc;
-    max-height: 200px;
-    overflow-y: auto;
-    width: calc(100% - 1rem); /* Width of suggestions box */
+    position: absolute; /* Position relative to input group */
+    z-index: 1000; /* Ensure it appears above other elements */
+    background: white; /* White background for visibility */
+    border: 1px solid #ccc; /* Border for the dropdown */
+    max-height: 200px; /* Limit height of suggestions */
+    overflow-y: auto; /* Enable vertical scrolling */
+    width: 100%; /* Match the width of the input field */
+    margin-top: 5px; /* Small space above the suggestions */
+    border-radius: 0 0 5px 5px; /* Rounded corners at the bottom */
 }
+
+.group-search {
+    position: relative; /* Keep the input group positioned */
+}
+
 
 /* Individual Suggestion Item */
 .suggestion-item {
@@ -87,4 +94,22 @@
 
 .back-to-top:hover {
     background-color: #0056b3;
+}
+.input-group {
+    position: relative; /* Positioning context for the icon */
+}
+
+.clear-icon {
+    position: absolute;
+    right: 10px; /* Position from the right edge */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Adjust for perfect centering */
+    cursor: pointer; /* Change cursor on hover */
+    display: flex; /* Centering icon */
+    align-items: center; /* Align vertically */
+    pointer-events: none; /* Prevent events on the icon directly */
+}
+
+.clear-icon i {
+    pointer-events: auto; /* Allow events on the icon */
 }

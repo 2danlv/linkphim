@@ -21,9 +21,14 @@
                     <option value="http://fs.fshare.uk:5244/d/movies/DataMovies/ThuvienCine/thuviencine_tv-series_extract_full_new_convert.json">TV-series (Live)</option>
                 </select>
             </div>
-            <div class="col-md-9">
-                <input type="text" id="searchInput" class="form-control" placeholder="Search for movies...">
-                <div id="suggestions" class="suggestions" style="display: none;"></div>
+            <div class="col-md-9 group-search">
+                <div class="input-group">
+                    <input type="text" id="searchInput" class="form-control" disabled placeholder="Search for movies..." style="padding-right: 30px;"> <!-- Add right padding for the icon -->
+                    <div id="clearSearch" class="clear-icon" style="display: none;" title="Clear search">
+                        <i class="bi bi-x-circle"></i> <!-- Bootstrap 'x' icon -->
+                    </div>
+                </div>
+                <div id="suggestions" class="suggestions" style="display: none;"></div> <!-- Suggestions dropdown -->
             </div>
         </div>
 

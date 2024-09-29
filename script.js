@@ -65,7 +65,6 @@ function renderItems(page) {
     });
 }
 
-
 // Function to render pagination
 function renderPagination() {
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -129,6 +128,7 @@ function renderPagination() {
 function smoothScroll() {
     $('html, body').animate({ scrollTop: 0 }, 500);
 }
+
 function formatDate(timestamp) {
     const date = new Date(timestamp * 1000); // Convert from seconds to milliseconds
     const day = String(date.getDate()).padStart(2, '0'); // Get day and pad with zero if needed
@@ -143,13 +143,17 @@ $(document).ready(function() {
         const selectedUrl = $(this).val();
         fetchData(selectedUrl);
         $('.fixed-search').show();
+        // Enable or disable search input based on the selection
+        $('#searchInput').prop('disabled', selectedUrl === '');
     });
 
     // Handle search input with debounce
     $('#searchInput').on('input', function() {
+        const query = $(this).val().toLowerCase();
+        $('#clearSearch').toggle(query.length > 0); // Show the clear icon when there's text
+
         clearTimeout(debounceTimeout);
         debounceTimeout = setTimeout(() => {
-            const query = $(this).val().toLowerCase();
             filteredData = data.filter(item => item.name.toLowerCase().includes(query));
             currentPage = 1;
             renderItems(currentPage);
@@ -203,5 +207,15 @@ $(document).ready(function() {
     // Scroll to the top when the button is clicked
     document.getElementById("backToTopBtn").addEventListener("click", function() {
         $('html, body').animate({ scrollTop: 0 }, 500);
+    });
+
+    // Clear input on icon click
+    $('#clearSearch').on('click', function() {
+        $('#searchInput').val(''); // Clear the input
+        $(this).hide(); // Hide the clear icon
+        filteredData = data; // Reset the filtered data
+        currentPage = 1; // Reset to the first page
+        renderItems(currentPage); // Re-render items
+        renderPagination(); // Re-render pagination
     });
 });
