@@ -5,6 +5,7 @@ let data = [];
 let filteredData = [];
 let debounceTimeout;
 
+// Function to fetch data from the selected URL
 function fetchData(url) {
     $('#loading').show();
     $('#content').hide();
@@ -22,6 +23,7 @@ function fetchData(url) {
     });
 }
 
+// Function to render items for the current page
 function renderItems(page) {
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -30,9 +32,9 @@ function renderItems(page) {
     const contentDiv = document.getElementById('content');
     contentDiv.innerHTML = '';
     itemsToShow.forEach(item => {
+        const posterUrl = item.info.poster.replace(/w600_and_h900_bestv2/, 'w342');
         const itemList = document.createElement('div');
         itemList.className = 'row mb-4';
-        const posterUrl = item.info.poster.replace(/w600_and_h900_bestv2/, 'w342');
         itemList.innerHTML = `
             <div class="col-md-3">
                 <img src="${posterUrl}" class="thumb-image" alt="${item.name}">
@@ -63,11 +65,13 @@ function renderItems(page) {
     });
 }
 
+// Function to render pagination
 function renderPagination() {
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
     const paginationUl = document.getElementById('pagination');
     paginationUl.innerHTML = '';
 
+    // Previous Button
     const prevLi = document.createElement('li');
     prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
     prevLi.innerHTML = `<a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
@@ -82,9 +86,10 @@ function renderPagination() {
     });
     paginationUl.appendChild(prevLi);
 
+    // Page Numbers
     let startPage = Math.max(1, currentPage - Math.floor(pageLimit / 2));
     let endPage = Math.min(totalPages, startPage + pageLimit - 1);
-
+    
     if (endPage - startPage < pageLimit - 1) {
         startPage = Math.max(1, endPage - pageLimit + 1);
     }
@@ -103,6 +108,7 @@ function renderPagination() {
         paginationUl.appendChild(li);
     }
 
+    // Next Button
     const nextLi = document.createElement('li');
     nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
     nextLi.innerHTML = `<a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
@@ -118,17 +124,20 @@ function renderPagination() {
     paginationUl.appendChild(nextLi);
 }
 
+// Function for smooth scroll animation
 function smoothScroll() {
     $('html, body').animate({ scrollTop: 0 }, 500);
 }
 
 $(document).ready(function() {
-    $('input[name="jsonFile"]').on('change', function() {
+    // Handle select box change event
+    $('#jsonSelect').on('change', function() {
         const selectedUrl = $(this).val();
         fetchData(selectedUrl);
         $('.fixed-search').show();
     });
 
+    // Handle search input with debounce
     $('#searchInput').on('input', function() {
         clearTimeout(debounceTimeout);
         debounceTimeout = setTimeout(() => {
@@ -142,6 +151,7 @@ $(document).ready(function() {
         }, 300);
     });
 
+    // Function to show search suggestions
     function showSuggestions(query) {
         const suggestionsDiv = $('#suggestions');
         suggestionsDiv.empty();
@@ -165,11 +175,13 @@ $(document).ready(function() {
         }
     }
 
+    // Hide suggestions when clicking outside of them
     $(document).on('click', function(event) {
         if (!$(event.target).closest('#suggestions, #searchInput').length) {
             $('#suggestions').hide();
         }
     });
+
     // Show or hide the "Back to Top" button based on scroll position
     window.onscroll = function() {
         const backToTopBtn = document.getElementById("backToTopBtn");
@@ -179,10 +191,9 @@ $(document).ready(function() {
             backToTopBtn.style.display = "none";
         }
     };
-    
+
     // Scroll to the top when the button is clicked
     document.getElementById("backToTopBtn").addEventListener("click", function() {
         $('html, body').animate({ scrollTop: 0 }, 500);
     });
-
 });

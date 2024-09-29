@@ -1,9 +1,11 @@
+/* Image Thumbnail Styles */
 .thumb-image {
     max-width: 100%;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Updated shadow */
 }
 
+/* Suggestions Dropdown */
 .suggestions {
     position: absolute;
     z-index: 1000;
@@ -14,6 +16,7 @@
     width: calc(100% - 1rem); /* Width of suggestions box */
 }
 
+/* Individual Suggestion Item */
 .suggestion-item {
     padding: 10px;
     cursor: pointer;
@@ -23,6 +26,7 @@
     background-color: #f1f1f1; /* Highlight color on hover */
 }
 
+/* Fixed Search Bar Styles */
 .fixed-search {
     position: sticky;
     top: 0;
@@ -36,19 +40,34 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
+/* Navigation Styles */
+.navi {
+    position: sticky; /* Make the navigation fixed when scrolling */
+    top: 0;           /* Stick to the top */
+    z-index: 1030;   /* Ensure it stays above other content */
+    background-color: white; /* Background color for visibility */
+    padding: 10px 0; /* Padding for aesthetics */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for separation */
+    opacity: 0.9;
+}
+
+/* Loading Indicator Styles */
 .loading {
     display: none; /* Initially hidden */
     text-align: center;
     margin: 20px; /* Margin around loading text */
 }
 
+/* Margin Utility Class */
 .ml-15 {
     margin-left: 15px; /* Left margin for spacing */
 }
 
+/* Card Styles */
 .card {
     height: 100%; /* Ensure card takes full height */
 }
+
 /* Back to Top Button Styling */
 .back-to-top {
     position: fixed;
