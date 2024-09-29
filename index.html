@@ -13,7 +13,11 @@
         <div class="mb-3">
             <label><input type="radio" name="jsonFile" value="thuviencine_movies_extract_full_new_convert.json"> Movies</label>
             <label class="ml-15"><input type="radio" name="jsonFile" value="thuviencine_tv-series_extract_full_new_convert.json"> TV-series</label>
+            <label class="ml-15"><input type="radio" name="jsonFile" value="http://fs.fshare.uk:5244/d/movies/DataMovies/ThuvienCine/thuviencine_movies_extract_full_new_convert.json"> Movies (Live)</label>
+            <!-- Added radio button for TV-series (Live) -->
+            <label class="ml-15"><input type="radio" name="jsonFile" value="http://fs.fshare.uk:5244/d/movies/DataMovies/ThuvienCine/thuviencine_tv-series_extract_full_new_convert.json"> TV-series (Live)</label>
         </div>
+
 
         <div class="fixed-search">
             <input type="text" id="searchInput" class="form-control mb-2" placeholder="Search for movies...">
@@ -26,7 +30,8 @@
             <ul id="pagination" class="pagination justify-content-center mt-4"></ul>
         </nav>
     </div>
-
+    <!-- Back to Top Button -->
+    <button id="backToTopBtn" class="back-to-top">Top</button>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="script.js"></script>
 </body>

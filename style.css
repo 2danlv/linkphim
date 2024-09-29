@@ -49,3 +49,23 @@
 .card {
     height: 100%; /* Ensure card takes full height */
 }
+/* Back to Top Button Styling */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+    display: none; /* Hidden by default */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.back-to-top:hover {
+    background-color: #0056b3;
+}

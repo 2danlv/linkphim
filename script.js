@@ -170,4 +170,19 @@ $(document).ready(function() {
             $('#suggestions').hide();
         }
     });
+    // Show or hide the "Back to Top" button based on scroll position
+    window.onscroll = function() {
+        const backToTopBtn = document.getElementById("backToTopBtn");
+        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+            backToTopBtn.style.display = "block";
+        } else {
+            backToTopBtn.style.display = "none";
+        }
+    };
+    
+    // Scroll to the top when the button is clicked
+    document.getElementById("backToTopBtn").addEventListener("click", function() {
+        $('html, body').animate({ scrollTop: 0 }, 500);
+    });
+
 });
