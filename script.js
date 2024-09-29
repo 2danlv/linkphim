@@ -32,9 +32,9 @@ function renderItems(page) {
     const contentDiv = document.getElementById('content');
     contentDiv.innerHTML = '';
     itemsToShow.forEach(item => {
-        const posterUrl = item.info.poster.replace(/w600_and_h900_bestv2/, 'w342');
         const itemList = document.createElement('div');
         itemList.className = 'row mb-4';
+        const posterUrl = item.info.poster.replace(/w600_and_h900_bestv2/, 'w342');
         itemList.innerHTML = `
             <div class="col-md-3">
                 <img src="${posterUrl}" class="thumb-image" alt="${item.name}">
@@ -43,7 +43,7 @@ function renderItems(page) {
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">${item.name}</h5>
-                        <p class="mb-3"><small><i>Added: ${new Date(item.info.added * 1000).toLocaleString()}</i></small></p>
+                        <p class="mb-3"><small><i>Added: ${formatDate(item.info.added)}</i></small></p>
                         <p class="card-text">${item.info.plot}</p>
                         <div class="list-group list-group-flush">
                             ${item.seasons.map(season => `
@@ -64,6 +64,7 @@ function renderItems(page) {
         contentDiv.appendChild(itemList);
     });
 }
+
 
 // Function to render pagination
 function renderPagination() {
@@ -127,6 +128,13 @@ function renderPagination() {
 // Function for smooth scroll animation
 function smoothScroll() {
     $('html, body').animate({ scrollTop: 0 }, 500);
+}
+function formatDate(timestamp) {
+    const date = new Date(timestamp * 1000); // Convert from seconds to milliseconds
+    const day = String(date.getDate()).padStart(2, '0'); // Get day and pad with zero if needed
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Get month (0-based, so +1) and pad
+    const year = date.getFullYear(); // Get full year
+    return `${day}/${month}/${year}`; // Return in dd/mm/yyyy format
 }
 
 $(document).ready(function() {
